@@ -15,6 +15,6 @@ func NewRandomHandler(router *http.ServeMux) {
 
 func (handler *RandomHandler) ThrowDice() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, rand.Intn(7))
+		fmt.Fprint(w, rand.Intn(6)+1)
 	}
 }
