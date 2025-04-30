@@ -3,9 +3,12 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"time"
 )
 
 func main() {
+	rand.NewSource(time.Now().UnixNano())
+
 	numCount := 10
 	sliceCh := make(chan int, numCount)
 	powCh := make(chan int, numCount)
