@@ -11,9 +11,10 @@ func main() {
 	powCh := make(chan int, numCount)
 
 	go func() {
-		slice := createSlice(numCount)
-		for _, v := range slice {
-			sliceCh <- v
+		slice := make([]int, numCount)
+		for i := 0; i < numCount; i++ {
+			slice[i] = rand.Intn(101)
+			sliceCh <- slice[i]
 		}
 		close(sliceCh)
 	}()
@@ -28,13 +29,4 @@ func main() {
 	for v := range powCh {
 		fmt.Println(v)
 	}
-}
-
-func createSlice(n int) []int {
-	slice := make([]int, n)
-	for i := 0; i < n; i++ {
-		slice[i] = rand.Intn(101)
-	}
-
-	return slice
 }
