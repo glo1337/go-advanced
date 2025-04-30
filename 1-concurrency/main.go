@@ -7,11 +7,12 @@ import (
 )
 
 func main() {
-	sliceCh := make(chan int)
-	powCh := make(chan float64)
+	numCount := 10
+	sliceCh := make(chan int, numCount)
+	powCh := make(chan float64, numCount)
 
 	go func() {
-		slice := createSlice(10)
+		slice := createSlice(numCount)
 		for _, v := range slice {
 			sliceCh <- v
 		}
