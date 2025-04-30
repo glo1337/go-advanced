@@ -7,29 +7,30 @@ import (
 )
 
 func main() {
-	rand.NewSource(time.Now().UnixNano())
+	rand.Seed(time.Now().UnixNano())
 
 	numCount := 10
 	sliceCh := make(chan int, numCount)
 	powCh := make(chan int, numCount)
 
-	go func() {
-		slice := make([]int, numCount)
-		for i := 0; i < numCount; i++ {
-			slice[i] = rand.Intn(101)
-			sliceCh <- slice[i]
-		}
-		close(sliceCh)
-	}()
-
-	go func() {
-		for v := range sliceCh {
-			powCh <- v * v
-		}
-		close(powCh)
-	}()
+	go generateRandomNumbers(numCount, sliceCh)
+	go calculateSquares(sliceCh, powCh)
 
 	for v := range powCh {
 		fmt.Println(v)
 	}
+}
+
+func generateRandomNumbers(count int, out chan<- int) {
+	for i := 0; i < count; i++ {
+		out <- rand.Intn(101)
+	}
+	close(out)
+}
+
+func calculateSquares(in <-chan int, out chan<- int) {
+	for v := range in {
+		out <- v * v
+	}
+	close(out)
 }
