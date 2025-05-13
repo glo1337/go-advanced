@@ -1,6 +1,9 @@
 package main
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 func main() {
 	router := http.NewServeMux()
@@ -9,6 +12,8 @@ func main() {
 		Addr:    ":8081",
 		Handler: router,
 	}
+
+	fmt.Println("Server started and listening on port 8081 ...")
 
 	server.ListenAndServe()
 }
