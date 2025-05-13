@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -13,7 +12,7 @@ func main() {
 		Handler: router,
 	}
 
-	fmt.Println("Server started and listening on port 8081 ...")
+	// fmt.Println("Server started and listening on port 8081 ...")
 
 	server.ListenAndServe()
 }
