@@ -11,3 +11,10 @@ type Product struct {
 	Description string
 	Images      pq.StringArray `gorm:"type:text[]"`
 }
+
+func NewProduct(name string) *Product {
+	product := &Product{
+		Name: name,
+	}
+	return product
+}
