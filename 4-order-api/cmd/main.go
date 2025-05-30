@@ -5,21 +5,29 @@ import (
 	"net/http"
 	"order-api/configs"
 	"order-api/internal/product"
+	"order-api/internal/user"
 	"order-api/middleware"
 	"order-api/pkg/db"
+	"order-api/pkg/jwt"
 )
 
 func main() {
 	conf := configs.LoadConfig()
 	db := db.NewDb(*conf)
 	router := http.NewServeMux()
+	jwt := jwt.NewJWT(conf.Auth.Secret)
 
 	// Reposotories
 	productRepo := product.NewProductRepository(db)
+	userRepo := user.NewUserRepository(db)
 
 	// Handler
 	product.NewProductHandler(router, product.ProductHandlerDeps{
 		ProductRepository: productRepo,
+	})
+	user.NewUserHandler(router, user.UserHandlerDeps{
+		UserRepository: userRepo,
+		JWT:            jwt,
 	})
 
 	server := http.Server{
