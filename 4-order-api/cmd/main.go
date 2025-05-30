@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"order-api/configs"
 	"order-api/internal/product"
+	"order-api/internal/user"
 	"order-api/middleware"
 	"order-api/pkg/db"
 )
@@ -16,10 +17,14 @@ func main() {
 
 	// Reposotories
 	productRepo := product.NewProductRepository(db)
+	userRepo := user.NewUserRepository(db)
 
 	// Handler
 	product.NewProductHandler(router, product.ProductHandlerDeps{
 		ProductRepository: productRepo,
+	})
+	user.NewUserHandler(router, user.UserHandlerDeps{
+		UserRepository: userRepo,
 	})
 
 	server := http.Server{
