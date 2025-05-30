@@ -25,10 +25,6 @@ func (user *User) GenerateSessionId() {
 	user.SessionId = RandStringRunes(10)
 }
 
-func (user *User) GenerateToken() {
-	user.Token = RandStringRunes(16)
-}
-
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 func RandStringRunes(n int) string {

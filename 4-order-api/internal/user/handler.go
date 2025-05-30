@@ -3,6 +3,7 @@ package user
 import (
 	"errors"
 	"net/http"
+	"order-api/pkg/jwt"
 	"order-api/request"
 	"order-api/response"
 	"slices"
@@ -12,10 +13,12 @@ import (
 
 type UserHandler struct {
 	UserRepository *UserRepository
+	JWT            *jwt.JWT
 }
 
 type UserHandlerDeps struct {
 	UserRepository *UserRepository
+	JWT            *jwt.JWT
 }
 
 var allowedCodes = []uint{1234, 3245, 0000}
@@ -23,6 +26,7 @@ var allowedCodes = []uint{1234, 3245, 0000}
 func NewUserHandler(router *http.ServeMux, deps UserHandlerDeps) {
 	handler := &UserHandler{
 		UserRepository: deps.UserRepository,
+		JWT:            deps.JWT,
 	}
 	router.HandleFunc("POST /auth/phone", handler.AuthByPhone())
 	router.HandleFunc("POST /auth/verify", handler.VerifyAuth())
@@ -83,8 +87,15 @@ func (handler *UserHandler) VerifyAuth() http.HandlerFunc {
 			return
 		}
 
-		user.GenerateToken()
-		_, err = handler.UserRepository.UpdateToken(user.ID, user.Token)
+		token, err := handler.JWT.Create(jwt.JWTData{
+			Phone: user.Phone,
+		})
+		if err != nil {
+			http.Error(w, "Ошибка JWT", http.StatusInternalServerError)
+			return
+		}
+
+		user, err = handler.UserRepository.UpdateToken(user.ID, token)
 		if err != nil {
 			http.Error(w, "Ошибка", http.StatusInternalServerError)
 			return

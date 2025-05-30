@@ -8,12 +8,14 @@ import (
 	"order-api/internal/user"
 	"order-api/middleware"
 	"order-api/pkg/db"
+	"order-api/pkg/jwt"
 )
 
 func main() {
 	conf := configs.LoadConfig()
 	db := db.NewDb(*conf)
 	router := http.NewServeMux()
+	jwt := jwt.NewJWT(conf.Auth.Secret)
 
 	// Reposotories
 	productRepo := product.NewProductRepository(db)
@@ -25,6 +27,7 @@ func main() {
 	})
 	user.NewUserHandler(router, user.UserHandlerDeps{
 		UserRepository: userRepo,
+		JWT:            jwt,
 	})
 
 	server := http.Server{
